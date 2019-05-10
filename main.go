@@ -9,12 +9,12 @@ import (
 	"github.com/nlopes/slack"
 )
 
-// https://api.slack.com/slack-apps
-// https://api.slack.com/internal-integrations
 type envConfig struct {
 	// BotToken is bot user token to access to slack API.
 	BotToken  string `envconfig:"BOT_TOKEN" required:"true"`
 	RakutenID string `envconfig:"RAKUTEN_ID" required:"true"`
+	BotName   string `envconfig:"BOT_NAME" required:"true"`
+	BotID     string `envconfig:"BOT_ID" required:"true"`
 }
 
 var env envConfig
@@ -47,11 +47,12 @@ func _main(args []string) int {
 		case *slack.ConnectedEvent:
 			fmt.Println("Infos:", ev.Info)
 			fmt.Println("Connection counter:", ev.ConnectionCount)
-
 		case *slack.MessageEvent:
 			fmt.Printf("Message: %v\n", ev)
-			rtm.SendMessage(rtm.NewOutgoingMessage(messageHandling(ev.Text), ev.Channel))
-
+			msg := messageHandling(ev.Text, ev.Type)
+			if msg != "" {
+				rtm.SendMessage(rtm.NewOutgoingMessage(msg, ev.Channel))
+			}
 		case *slack.PresenceChangeEvent:
 			fmt.Printf("Presence Change: %v\n", ev)
 
