@@ -1,3 +1,4 @@
+// Slack上で動くbotくん
 package main
 
 import (
@@ -49,7 +50,7 @@ func _main(args []string) int {
 			fmt.Println("Connection counter:", ev.ConnectionCount)
 		case *slack.MessageEvent:
 			fmt.Printf("Message: %v\n", ev)
-			msg := messageHandling(ev.Text, ev.Type)
+			msg := handleMsg(ev.Text)
 			if msg != "" {
 				rtm.SendMessage(rtm.NewOutgoingMessage(msg, ev.Channel))
 			}
