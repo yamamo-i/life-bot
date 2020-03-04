@@ -12,3 +12,6 @@
 *.out
 
 envfile
+
+.idea
+vendor
